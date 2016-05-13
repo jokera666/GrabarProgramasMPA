@@ -142,12 +142,13 @@ int main()
 
     int opcion;
     int numProgramas;
+    float tamUsb = 0;
     float **getFichero;
     float *vectorPesosProgramas;
 
         do
         {
-
+            fflush( stdin ); //Borrar el8buffer
             cout<<"\t\t\t     ---> GRABACION DE PROGRAMAS <--- "<<endl<<endl;
 
             cout<<"\t\t#########################################################"<<endl;
@@ -163,15 +164,17 @@ int main()
             cout<<"\t\tIntroduce tu opcion: ";
 
             cin>>opcion;// seleccion de la opcion en la consola
+            fflush( stdin ); //Borrar el buffer
+
 
             //comprobar si la opcion es introducida es un numero
-            if (cin.fail())
-            {
-                cin.clear();
-                cin.get();
-            }
+//            if (cin.fail())
+//            {
+//                cin.clear();
+//                cin.get();
+//            }
 
-            cin.get();
+            //cin.get();
 
             switch(opcion)
             {
@@ -196,32 +199,42 @@ int main()
                     vectorPesosProgramas = ReservarMemoriaVector(numProgramas);
                     InicializarVectorProgramas(getFichero,vectorPesosProgramas,numProgramas);
                     ImprimirProgramas(vectorPesosProgramas,numProgramas);
-                    //ImprimirVector(vectorPesosProgramas,numProgramas);
 
+                    //ImprimirVector(vectorPesosProgramas,numProgramas);
                     cout<<"\t\tPulsa la tecla ENTER para volver al menu...";
+                    cin.get();
                     cin.get();
                     system("CLS");
                 break;
 
                 case 2:
                     system("CLS");
-                    cout<<"Estas en la opcion 2"<<endl;
+                    cout<<endl;
+                    cout<<"\t\t     ---> 2.- Capacidad disponible de la memoria <--- "<<endl<<endl;
+                    cout<<"Introduce la capacidad disponible de la memoria USB:  ";
+                    cin>>tamUsb;
+                    fflush( stdin ); //Borrar el buffer
+                    cout<<endl;
                     cout<<"\t\tPulsa la tecla ENTER para volver al menu...";
+                    cin.get();
                     cin.get();
                     system("CLS");
                 break;
 
                 case 3:
                     system("CLS");
-                    cout<<"Estas en la opcion 3"<<endl;
+                    LiberarMemoria(getFichero,vectorPesosProgramas);
+                    cout<<endl;
+                    cout<<"\t\t     ---> 3.- Grabar maximo numero de programas <--- "<<endl<<endl;
                     cout<<"\t\tPulsa la tecla ENTER para volver al menu...";
                     cin.get();
                     system("CLS");
                 break;
 
                 case 4:
-                    system("CLS");
-                    cout<<"Estas en la opcion 4"<<endl;
+                    LiberarMemoria(getFichero,vectorPesosProgramas);
+                    cout<<endl;
+                    cout<<"\t\t     ---> 4.- Grabar maximo capacidad <--- "<<endl<<endl;
                     cout<<"\t\tPulsa la tecla ENTER para volver al menu...";
                     cin.get();
                     system("CLS");
