@@ -9,3 +9,9 @@
 	<fstream>
 	<stdlib.h>
 
+1463144286 source:c:\users\ndobrinov\desktop\grabarprogramasmpa\main.cpp
+	<iostream>
+	<fstream>
+	<stdlib.h>
+	<cstdlib>
+

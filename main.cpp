@@ -1,9 +1,10 @@
 #include <iostream>
 #include <fstream>  // libreria para abrir leer y escribir en fichero
 #include <stdlib.h> // rand y system
+#include <cstdlib>
 
 using namespace std;
-
+//http://www.lawebdelprogramador.com/foros/Dev-C/1405999-Menu-en-C.html
 float** ReservarMemoriaMatriz(int n)
 {
     float **matrizAux = new float*[n+1];
@@ -137,10 +138,16 @@ void LiberarMemoria (float **M, float *V)
     delete V;
 }
 
+void pausa()
+{
+    cout<<"\t\tPulsa la tecla ENTER para volver al menu...";
+    cin.get();
+    cin.get();
+}
 int main()
 {
 
-    int opcion;
+    char opcion;
     int numProgramas;
     float tamUsb = 0;
     float **getFichero;
@@ -148,7 +155,9 @@ int main()
 
         do
         {
-            fflush( stdin ); //Borrar el8buffer
+
+            system("CLS");
+
             cout<<"\t\t\t     ---> GRABACION DE PROGRAMAS <--- "<<endl<<endl;
 
             cout<<"\t\t#########################################################"<<endl;
@@ -163,22 +172,22 @@ int main()
 
             cout<<"\t\tIntroduce tu opcion: ";
 
-            cin>>opcion;// seleccion de la opcion en la consola
-            fflush( stdin ); //Borrar el buffer
-
+            //getchar()>>opcion;// seleccion de la opcion en la consola
+            cin>>opcion;
+            //cin.clear();
+            //fflush( stdin ); //Borrar el8buffer
 
             //comprobar si la opcion es introducida es un numero
 //            if (cin.fail())
 //            {
-//                cin.clear();
 //                cin.get();
+//                cin.clear();
+//                fflush( stdin ); //Borrar el8buffer
 //            }
-
-            //cin.get();
 
             switch(opcion)
             {
-                case 1:
+                case '1':
                     system("CLS");
                     // Hay que liberar memoria despues de cada opcion papra que al volver
                     //a entrar en ella otra vez se quede colgado el programa. Porque nada mas
@@ -201,27 +210,20 @@ int main()
                     ImprimirProgramas(vectorPesosProgramas,numProgramas);
 
                     //ImprimirVector(vectorPesosProgramas,numProgramas);
-                    cout<<"\t\tPulsa la tecla ENTER para volver al menu...";
-                    cin.get();
-                    cin.get();
-                    system("CLS");
+                    pausa();
                 break;
 
-                case 2:
+                case '2':
+                    //fflush( stdin ); //Borrar el buffer
                     system("CLS");
                     cout<<endl;
                     cout<<"\t\t     ---> 2.- Capacidad disponible de la memoria <--- "<<endl<<endl;
                     cout<<"Introduce la capacidad disponible de la memoria USB:  ";
                     cin>>tamUsb;
-                    fflush( stdin ); //Borrar el buffer
-                    cout<<endl;
-                    cout<<"\t\tPulsa la tecla ENTER para volver al menu...";
-                    cin.get();
-                    cin.get();
-                    system("CLS");
+                    pausa();
                 break;
 
-                case 3:
+                case '3':
                     system("CLS");
                     LiberarMemoria(getFichero,vectorPesosProgramas);
                     cout<<endl;
@@ -231,7 +233,8 @@ int main()
                     system("CLS");
                 break;
 
-                case 4:
+                case '4':
+                    system("CLS");
                     LiberarMemoria(getFichero,vectorPesosProgramas);
                     cout<<endl;
                     cout<<"\t\t     ---> 4.- Grabar maximo capacidad <--- "<<endl<<endl;
@@ -240,7 +243,7 @@ int main()
                     system("CLS");
                 break;
 
-                case 5:
+                case '5':
                     return 1;
                 break;
 
@@ -252,7 +255,7 @@ int main()
                 break;
 
             }
-        }while(opcion!=5);
+        }while(opcion!='5');
 
     system("PAUSE"); // Para parar el programa ejecutado desde el .EXE
     return 0;
