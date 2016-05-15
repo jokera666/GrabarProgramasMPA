@@ -72,7 +72,7 @@ void InicializarVectorProgramas(float **M, float *V, int n)
     }
 }
 
-void ImprimirVector(float *V, int n)
+void ImprimirVector(int *V, int n)
 {
     int i;
 
@@ -275,40 +275,11 @@ float** LeerFichero(int &tam)
    return (matriz);
 }
 
-void MaxNumProgramas(float *VPP, float *Vsolucion, float espacioLibre, int n)
+float *MaxNumProgramas(float *VPP, float *Vsolucion)
 {
     float suma = 0;
-    float x = 0;
+    float x;
     int aux = 1;
-    int aux2 = 1;
-
-    if(espacioLibre==0)
-    {
-        cout<<"No hay espacio libre en la memoria."<<endl;
-    }
-    else
-    {
-        cout<<"El espacio libre en la memoria es: "<<espacioLibre<<" GB."<<endl;
-        while( ( suma<=espacioLibre ) && ( aux<=n ) )
-        {
-            x = VPP[aux];
-            cout<<" x: "<<x<<endl;
-            suma = suma + x;
-            cout<<"suma es: "<<suma<<endl;
-            if(suma<=espacioLibre)
-            {
-                //cout<<"aux2 in: "<<aux2<<endl;
-                cout<<"Entrooo---->"<<endl<<endl;
-                Vsolucion[aux2] = x;
-                aux2++;
-            }
-        //cout<<"aux: "<<aux<<endl;
-        aux++;
-
-        }
-        ImprimirVector(Vsolucion,n);
-    }
-
 
 }
 
@@ -447,8 +418,8 @@ int main()
 
                     ImprimirProgramas(vectorPesosProgramas,VectorPosiciones,numProgramas,3);
 
-                    MaxNumProgramas(vectorPesosProgramas,Vsolucion,tamUsb,numProgramas);
-                    //ImprimirVector(Vsolucion,numProgramas);
+                    ImprimirVector(Vsolucion,numProgramas);
+
                     cout<<endl;
                     //ImprimirProgramas(auxVectorPesosProgramas,numProgramas);
                     cout<<endl;
