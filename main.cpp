@@ -1,7 +1,16 @@
+/*############################################################################
+# Nombre de la practica: Grabación de programas								 #
+# Realizada por: Nestor Dobrinov Edrev										 #
+# Grado: Grado en Ingeniería Informática en Tecnologías de la Información    #
+# Asignatura: Metodología de la Programación y Algoritmia	                 #
+# Fecha: 12/05/2016														     #
+#                                           Universidad Miguel Hernández     #
+############################################################################## */
+
 #include <iostream>
 #include <fstream>  // libreria para abrir leer y escribir en fichero
 #include <stdlib.h> // rand y system
-#include <cstdlib>
+#include <iomanip> //setprecision(3)<<fixed Es para mostrar los decimales en el cout
 
 using namespace std;
 
@@ -203,6 +212,13 @@ void ImprimirProgramas(float *V, int *Vposiciones, int n, int option)
             cout<<"\tPrograma n"<<(char)167<<" "<<Vposiciones[i]<<" de capacidad "<<V[i]<<"GB"<<endl;
         }
 
+        else if(option==4)
+        {
+            //(char)167 De esta manera se escriben los caracteres ASCII
+            // segun el numero de caracter. En este caso 167 es 'º' para la numeración
+            if(V[i]!=0)cout<<"\tPrograma n"<<(char)167<<" "<<Vposiciones[i]<<" de capacidad "<<V[i]<<"GB"<<endl;
+        }
+
     }
     cout<<endl;
 }
@@ -281,6 +297,11 @@ void MaxNumProgramas(float *VPP, float *Vsolucion, float espacioLibre, int n)
     float x = 0;
     int aux = 1;
     int aux2 = 1;
+    float espacioLibrePrecision = 0;
+    float precision = 0.00001;
+
+    //Variable de precision para compara los numeros con coma flotante (float, double)
+    espacioLibrePrecision = espacioLibre + precision;
 
     if(espacioLibre==0)
     {
@@ -288,28 +309,45 @@ void MaxNumProgramas(float *VPP, float *Vsolucion, float espacioLibre, int n)
     }
     else
     {
-        cout<<"El espacio libre en la memoria es: "<<espacioLibre<<" GB."<<endl;
-        while( ( suma<=espacioLibre ) && ( aux<=n ) )
+
+        while( suma<=espacioLibrePrecision && aux<=n  )
         {
             x = VPP[aux];
-            cout<<" x: "<<x<<endl;
+            //cout<<" x: "<<x<<endl;
             suma = suma + x;
-            cout<<"suma es: "<<suma<<endl;
-            if(suma<=espacioLibre)
+            //cout<<"suma es: "<<suma<<endl;
+            if(suma<=espacioLibrePrecision)
             {
-                //cout<<"aux2 in: "<<aux2<<endl;
-                cout<<"Entrooo---->"<<endl<<endl;
                 Vsolucion[aux2] = x;
                 aux2++;
             }
-        //cout<<"aux: "<<aux<<endl;
         aux++;
 
         }
-        ImprimirVector(Vsolucion,n);
     }
 
 
+}
+
+void CalcularEspacio(float *V, int n, float espacioLibre)
+{
+    int i;
+    float espacioOcupado = 0;
+
+    float espacioLibrePrecision = 0;
+    float precision = 0.00001;
+
+    //Variable de precision para compara los numeros con coma flotante (float, double)
+    espacioLibrePrecision = espacioLibre + precision;
+
+
+    for(i=1; i<=n; i++)
+    {
+        espacioOcupado = espacioOcupado + V[i];
+    }
+    espacioOcupado = espacioOcupado + precision;
+    cout<<setprecision(2)<<fixed<<"\tEl espacio ocupado en la memoria es de: "<<espacioOcupado<<" GB."<<endl<<endl;
+    cout<<setprecision(2)<<fixed<<"\tEl espacio libre en la memoria es de: "<<espacioLibrePrecision-espacioOcupado<<" GB."<<endl;
 }
 
 void LiberarMemoria (float **M, float *V)
@@ -329,18 +367,19 @@ int main()
     char opcion;
     int numProgramas;
     float tamUsb = 0;
-    float **getFichero;
-    float *vectorPesosProgramas;
-    float *auxVectorPesosProgramas;
-    int *VectorPosiciones;
-    float *Vsolucion;
+
+    float   **getFichero;
+    float   *vectorPesosProgramas;
+    float   *auxVectorPesosProgramas;
+    int     *VectorPosiciones;
+    float   *Vsolucion;
 
     //variables necesarias para el Mergesort 2
     int izq = 1;
     int der = 5;
 
     // vector necesario para el Mergesort 2
-    float *auxVectorProgramas;
+    float   *auxVectorProgramas;
 
 
 
@@ -391,8 +430,6 @@ int main()
                     vectorPesosProgramas = ReservarMemoriaVector(numProgramas);
                     InicializarVectorProgramas(getFichero,vectorPesosProgramas,numProgramas);
                     ImprimirProgramas(vectorPesosProgramas,VectorPosiciones,numProgramas,1);
-
-                    //ImprimirVector(vectorPesosProgramas,numProgramas);
                     pausa();
                 break;
 
@@ -426,36 +463,36 @@ int main()
                         return -1;
                     }
 
-                    vectorPesosProgramas    = ReservarMemoriaVector(numProgramas);
+
+                    /*auxVectorPesosProgramas sera una copia de los programas en su estado inicial*/
                     auxVectorPesosProgramas = ReservarMemoriaVector(numProgramas);
-                    auxVectorProgramas      = ReservarMemoriaVector(numProgramas);
-                    Vsolucion               = ReservarMemoriaVector(numProgramas);
-
-                    InicializarVectorProgramas(getFichero,vectorPesosProgramas,numProgramas);
-                    InicializarVector(Vsolucion,numProgramas);
-
-                    //auxVectorPesosProgramas es para sacar el orden de los programas
                     InicializarVectorProgramas(getFichero,auxVectorPesosProgramas,numProgramas);
+
+
+                    vectorPesosProgramas    = ReservarMemoriaVector(numProgramas);
+                    auxVectorProgramas      = ReservarMemoriaVector(numProgramas);
+                    InicializarVectorProgramas(getFichero,vectorPesosProgramas,numProgramas);
+
+                    /*cout<<"\tLos programas en su estado inicial: "<<endl<<endl;
                     ImprimirProgramas(vectorPesosProgramas,VectorPosiciones,numProgramas,1);
-                    cout<<endl;
+                    cout<<endl;*/
 
                     OrdenarVectorProgramas(vectorPesosProgramas, auxVectorProgramas,izq,der);
 
                     VectorPosiciones = ReservarMemoriaVectorInt(numProgramas);
                     VectorPosiciones = PosicionesProgramas(vectorPesosProgramas,auxVectorPesosProgramas,numProgramas);
 
-
+                    /*cout<<"\Los programas ordenados de menor a mayor: "<<endl<<endl;
                     ImprimirProgramas(vectorPesosProgramas,VectorPosiciones,numProgramas,3);
+                    cout<<endl;*/
 
+                    Vsolucion = ReservarMemoriaVector(numProgramas);
+                    InicializarVector(Vsolucion,numProgramas);
                     MaxNumProgramas(vectorPesosProgramas,Vsolucion,tamUsb,numProgramas);
-                    //ImprimirVector(Vsolucion,numProgramas);
+                    cout<<"\tLos programas insertados en la memoria con espacio libre de "<<tamUsb<<" GB son:"<<endl<<endl;
+                    ImprimirProgramas(Vsolucion,VectorPosiciones,numProgramas,4);
+                    CalcularEspacio(Vsolucion,numProgramas,tamUsb);
                     cout<<endl;
-                    //ImprimirProgramas(auxVectorPesosProgramas,numProgramas);
-                    cout<<endl;
-                   // ImprimirVector(VectorPosiciones,numProgramas);
-
-
-                    //cout<<"tam 3:"<<tamUsb<<endl;
                     pausa();
                 break;
 
