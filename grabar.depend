@@ -1,9 +1,8 @@
 # depslib dependency file v1.0
-1463417344 source:c:\users\the joker\google drive\1º grado de informatica\mpa metodologia de la programacion y algoritmia\practica mpa\grabar\main.cpp
+1463504467 source:c:\users\the joker\google drive\1º grado de informatica\mpa metodologia de la programacion y algoritmia\practica mpa\grabar\main.cpp
 	<iostream>
 	<fstream>
 	<stdlib.h>
-	<cstdlib>
 	<iomanip>
 
 1463127809 source:c:\users\thejoker\desktop\grabarprogramasmpa\main.cpp

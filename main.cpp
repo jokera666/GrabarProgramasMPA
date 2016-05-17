@@ -67,16 +67,20 @@ void InicializarVector(float *V, int n)
     }
 }
 
-void InicializarVectorProgramas(float **M, float *V, int n)
+void InicializarVectorProgramas(float **M, float *V, int *numV, int n)
 {
     int i;
     int j;
 
     for(i=1; i<=n; i++)
     {
+        // Enumeración de los programas
+        numV[i] = i;
+
         for(j=1; j<=1; j++)
         {
-            V[i]    = M[i][j];
+            //Pesos de cada uno de los programa
+            V[i] = M[i][j];
         }
     }
 }
@@ -93,20 +97,28 @@ void ImprimirVector(float *V, int n)
 }
 
 
-void Intercambiar(float &izq, float &der)
+void Intercambiar(float &izq, float &der,int &izqI, int &derI)
 {
     float temp;
+    int tempI;
 
     if(izq > der)
     {
         temp = izq;
         izq = der;
-        der= temp;
+        der = temp;
+    }
+
+    if(izqI > derI)
+    {
+        tempI = izqI;
+        izqI = derI;
+        derI = tempI;
     }
 }
 
 
-void Combinar2(float *V, float *Vaux, int izq, int centro, int der)
+void Combinar2(float *V, float *Vaux, int *numV, int *numVaux, int izq, int centro, int der)
 {
     int i,j, i1, i2;
     i = izq;
@@ -118,11 +130,13 @@ void Combinar2(float *V, float *Vaux, int izq, int centro, int der)
         if(V[i1]<V[i2])
         {
             Vaux[i] = V[i1];
+            numVaux[i] = numV[i1];
             i1++;
         }
         else
         {
             Vaux[i] = V[i2];
+            numVaux[i] = numV[i2];
             i2++;
         }
 
@@ -134,6 +148,7 @@ void Combinar2(float *V, float *Vaux, int izq, int centro, int der)
         for(j=i; j<=der; j++)
         {
             Vaux[j] = V[i2];
+            numVaux[j] = numV[i2];
             i2++;
         }
     }
@@ -142,6 +157,7 @@ void Combinar2(float *V, float *Vaux, int izq, int centro, int der)
         for(j=i; j<=der; j++)
         {
             Vaux[j] = V[i1];
+            numVaux[j] = numV[i1];
             i1++;
         }
     }
@@ -149,28 +165,36 @@ void Combinar2(float *V, float *Vaux, int izq, int centro, int der)
     for(j=izq; j<=der; j++)
     {
         V[j] = Vaux[j];
+        numV[j] = numVaux[j];
     }
 
 }
 
+void InicializarMergesort2(int &izq, int &der, int n)
+{
+    //izq es el primer elemento del vector
+    izq = 1;
+    //derecha es el ultimo elemento del vector
+    der = n; // tamaño del problema
+}
 
 
 //El vector se ordenara de menor a mayor mediante el algoritmo: Mergesort 2
-void OrdenarVectorProgramas(float *V, float *Vaux, int izq, int der)
+void OrdenarVectorProgramas(float *V, float *Vaux, int *numV, int *numVaux, int izq, int der)
 {
     int centro;
 
     if((der-izq+1) <= 2) // "<=" en caso de que el vector es de tamaño impar
     {
-        Intercambiar(V[izq],V[der]);
+        Intercambiar(V[izq],V[der],numV[izq],numV[der]);
     }
 
     else
     {
         centro = (izq + der) / 2;
-        OrdenarVectorProgramas(V, Vaux, izq, centro);
-        OrdenarVectorProgramas(V, Vaux, centro+1, der);
-        Combinar2(V, Vaux, izq, centro, der);
+        OrdenarVectorProgramas(V, Vaux, numV, numVaux, izq, centro);
+        OrdenarVectorProgramas(V, Vaux, numV, numVaux, centro+1, der);
+        Combinar2(V, Vaux, numV, numVaux, izq, centro, der);
     }
 }
 
@@ -193,32 +217,15 @@ int *PosicionesProgramas(float *VPP, float *AVPP, int n)
     return vAux;
 }
 
-void ImprimirProgramas(float *V, int *Vposiciones, int n, int option)
+void ImprimirProgramas(float *V, int *numV, int n)
 {
     int i;
 
     for(i=1; i<=n; i++)
     {
-        if(option==1)
-        {
-            //(char)167 De esta manera se escriben los caracteres ASCII
-            // segun el numero de caracter. En este caso 167 es 'º' para la numeración
-            cout<<"\tPrograma n"<<(char)167<<" "<<i<<" de capacidad "<<V[i]<<"GB"<<endl;
-        }
-        else if(option==3)
-        {
-            //(char)167 De esta manera se escriben los caracteres ASCII
-            // segun el numero de caracter. En este caso 167 es 'º' para la numeración
-            cout<<"\tPrograma n"<<(char)167<<" "<<Vposiciones[i]<<" de capacidad "<<V[i]<<"GB"<<endl;
-        }
-
-        else if(option==4)
-        {
-            //(char)167 De esta manera se escriben los caracteres ASCII
-            // segun el numero de caracter. En este caso 167 es 'º' para la numeración
-            if(V[i]!=0)cout<<"\tPrograma n"<<(char)167<<" "<<Vposiciones[i]<<" de capacidad "<<V[i]<<"GB"<<endl;
-        }
-
+        //(char)167 De esta manera se escriben los caracteres ASCII
+        // segun el numero de caracter. En este caso 167 es 'º' para la numeración
+        if(V[i]!=0)cout<<"\tPrograma n"<<(char)167<<" "<<numV[i]<<" de capacidad "<<V[i]<<"GB."<<endl;
     }
     cout<<endl;
 }
@@ -305,7 +312,7 @@ void MaxNumProgramas(float *VPP, float *Vsolucion, float espacioLibre, int n)
 
     if(espacioLibre==0)
     {
-        cout<<"No hay espacio libre en la memoria."<<endl;
+        cout<<"\t\tNo hay espacio libre en la memoria."<<endl<<endl;
     }
     else
     {
@@ -370,16 +377,16 @@ int main()
 
     float   **getFichero;
     float   *vectorPesosProgramas;
-    float   *auxVectorPesosProgramas;
-    int     *VectorPosiciones;
+    int     *numeracionProgramas;
     float   *Vsolucion;
 
     //variables necesarias para el Mergesort 2
-    int izq = 1;
-    int der = 5;
+    int izq;// el primer elemento del vector
+    int der; // ultimo elemento del vector
 
     // vector necesario para el Mergesort 2
     float   *auxVectorProgramas;
+    int     *auxNumeracionProgramas;
 
 
 
@@ -428,8 +435,9 @@ int main()
                     }
 
                     vectorPesosProgramas = ReservarMemoriaVector(numProgramas);
-                    InicializarVectorProgramas(getFichero,vectorPesosProgramas,numProgramas);
-                    ImprimirProgramas(vectorPesosProgramas,VectorPosiciones,numProgramas,1);
+                    numeracionProgramas  = ReservarMemoriaVectorInt(numProgramas);
+                    InicializarVectorProgramas(getFichero,vectorPesosProgramas,numeracionProgramas,numProgramas);
+                    ImprimirProgramas(vectorPesosProgramas,numeracionProgramas,numProgramas);
                     pausa();
                 break;
 
@@ -464,33 +472,26 @@ int main()
                     }
 
 
-                    /*auxVectorPesosProgramas sera una copia de los programas en su estado inicial*/
-                    auxVectorPesosProgramas = ReservarMemoriaVector(numProgramas);
-                    InicializarVectorProgramas(getFichero,auxVectorPesosProgramas,numProgramas);
-
-
                     vectorPesosProgramas    = ReservarMemoriaVector(numProgramas);
                     auxVectorProgramas      = ReservarMemoriaVector(numProgramas);
-                    InicializarVectorProgramas(getFichero,vectorPesosProgramas,numProgramas);
+                    numeracionProgramas     = ReservarMemoriaVectorInt(numProgramas);
+                    auxNumeracionProgramas  = ReservarMemoriaVectorInt(numProgramas);
 
-                    /*cout<<"\tLos programas en su estado inicial: "<<endl<<endl;
-                    ImprimirProgramas(vectorPesosProgramas,VectorPosiciones,numProgramas,1);
-                    cout<<endl;*/
 
-                    OrdenarVectorProgramas(vectorPesosProgramas, auxVectorProgramas,izq,der);
+                    InicializarVectorProgramas(getFichero,vectorPesosProgramas,numeracionProgramas,numProgramas);
 
-                    VectorPosiciones = ReservarMemoriaVectorInt(numProgramas);
-                    VectorPosiciones = PosicionesProgramas(vectorPesosProgramas,auxVectorPesosProgramas,numProgramas);
+                    InicializarMergesort2(izq,der,numProgramas);
+                    OrdenarVectorProgramas(vectorPesosProgramas, auxVectorProgramas,numeracionProgramas,auxNumeracionProgramas,izq,der);
 
-                    /*cout<<"\Los programas ordenados de menor a mayor: "<<endl<<endl;
-                    ImprimirProgramas(vectorPesosProgramas,VectorPosiciones,numProgramas,3);
-                    cout<<endl;*/
+                    /*Al descomentar la siguiente linea se mostraran todos los programas ordenados con su numeracion correspondiente*/
+                    //ImprimirProgramas(vectorPesosProgramas,numeracionProgramas,numProgramas);
 
                     Vsolucion = ReservarMemoriaVector(numProgramas);
                     InicializarVector(Vsolucion,numProgramas);
                     MaxNumProgramas(vectorPesosProgramas,Vsolucion,tamUsb,numProgramas);
+
                     cout<<"\tLos programas insertados en la memoria con espacio libre de "<<tamUsb<<" GB son:"<<endl<<endl;
-                    ImprimirProgramas(Vsolucion,VectorPosiciones,numProgramas,4);
+                    ImprimirProgramas(Vsolucion,numeracionProgramas,numProgramas);
                     CalcularEspacio(Vsolucion,numProgramas,tamUsb);
                     cout<<endl;
                     pausa();
@@ -498,10 +499,10 @@ int main()
 
                 case '4':
                     system("CLS");
-                    //LiberarMemoria(getFichero,vectorPesosProgramas);
+                    LiberarMemoria(getFichero,vectorPesosProgramas);
                     cout<<endl;
                     cout<<"\t\t     ---> 4.- Grabar maximo capacidad <--- "<<endl<<endl;
-                    cout<<"tam 4: "<<tamUsb<<endl;
+                    cout<<"\t\t !!! ESTE APARTADO AUN ESTA EN OBRAS !!!\a"<<endl<<endl;
                     pausa();
                 break;
 
