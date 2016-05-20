@@ -220,14 +220,20 @@ int *PosicionesProgramas(float *VPP, float *AVPP, int n)
 void ImprimirProgramas(float *V, int *numV, int n)
 {
     int i;
+    int totalProgramas=0;
 
     for(i=1; i<=n; i++)
     {
         //(char)167 De esta manera se escriben los caracteres ASCII
         // segun el numero de caracter. En este caso 167 es 'º' para la numeración
-        if(V[i]!=0)cout<<"\tPrograma n"<<(char)167<<" "<<numV[i]<<" de capacidad "<<V[i]<<"GB."<<endl;
+        if(V[i]!=0)
+        {
+            cout<<"\tPrograma n"<<(char)167<<" "<<numV[i]<<" de capacidad "<<V[i]<<"GB."<<endl;
+            totalProgramas++;
+        }
     }
     cout<<endl;
+    cout<<"\tNumero total de programas: "<<totalProgramas<<endl<<endl;
 }
 
 
